@@ -20,14 +20,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: Text(widget.title),
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/authorization');
+            }, 
+            icon: const Icon(Icons.login)
+            )
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Spacer(
+          const Spacer(
             flex: 2,
           ),
           Expanded(
@@ -39,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Spacer(
+          const Spacer(
             flex: 1,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -49,12 +56,12 @@ class _HomePageState extends State<HomePage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent,
-                fixedSize: Size(150, 75),
+                fixedSize: const Size(150, 75),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 '-',
                 style: TextStyle(
                     color: Colors.white,
@@ -66,12 +73,12 @@ class _HomePageState extends State<HomePage> {
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.greenAccent,
-                fixedSize: Size(150, 75),
+                fixedSize: const Size(150, 75),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 '+',
                 style: TextStyle(
                     color: Colors.white,
@@ -80,7 +87,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ]),
-          Spacer(
+          const Spacer(
             flex: 1,
           ),
         ],
@@ -109,10 +116,10 @@ class _HomePageState extends State<HomePage> {
         title: '''${expenses[i].name}
  ${((expenses[i].value / sumExpenses) * 100).round()}%''',
         radius: 80,
-        titleStyle: TextStyle(
+        titleStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: const Color(0xffffffff),
+          color: Color(0xffffffff),
         ),
       ));
     }
@@ -122,10 +129,10 @@ class _HomePageState extends State<HomePage> {
         value: 100,
         title: '',
         radius: 80,
-        titleStyle: TextStyle(
+        titleStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: const Color(0xffffffff),
+          color: Color(0xffffffff),
         ),
       ));
     }
