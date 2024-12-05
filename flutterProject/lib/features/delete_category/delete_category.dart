@@ -10,10 +10,26 @@ class DeleteCategory extends StatefulWidget {
   State<DeleteCategory> createState() => _DeleteCategoryState();
 }
 
-class _DeleteCategoryState extends State<DeleteCategory> {
+class _DeleteCategoryState extends State<DeleteCategory> with SingleTickerProviderStateMixin {
   List<Category> expenses = Expenses.instance.expenses;
-  AnimationController _controller = AnimationController( duration: const Duration(milliseconds: 500), vsync: this, )..repeat(reverse: true);
-  Animation<double> _animation;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 100),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: -0.05, end: 0.05).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +42,14 @@ class _DeleteCategoryState extends State<DeleteCategory> {
         builder: (context, constraints) {
           double cellWidth = (constraints.maxWidth - 32) / 3;
           return SingleChildScrollView(
-              child: Table(
-                border: TableBorder.all(
-                  color: const Color(0xfffef7ff),
-                  width: 3,
-                ),
-                children: _buildTableRows(expenses, cellWidth),
-              ));
+            child: Table(
+              border: TableBorder.all(
+                color: const Color(0xfffef7ff),
+                width: 3,
+              ),
+              children: _buildTableRows(expenses, cellWidth),
+            ),
+          );
         },
       ),
     );
@@ -44,13 +61,13 @@ class _DeleteCategoryState extends State<DeleteCategory> {
       rows.add(
         TableRow(
           children: [
-            _buildCell(items[i].name, cellWidth),
+            _buildAnimatedCell(items[i].name, cellWidth),
             if (i + 1 < items.length)
-              _buildCell(items[i + 1].name, cellWidth)
+              _buildAnimatedCell(items[i + 1].name, cellWidth)
             else
               Container(),
             if (i + 2 < items.length)
-              _buildCell(items[i + 2].name, cellWidth)
+              _buildAnimatedCell(items[i + 2].name, cellWidth)
             else
               Container(),
           ],
@@ -60,24 +77,36 @@ class _DeleteCategoryState extends State<DeleteCategory> {
     return rows;
   }
 
-  Widget _buildCell(String cellContent, double cellWidth) {
-    return GestureDetector(
-      onTap: () => _onCellTapped(cellContent),
-      child: Container(
-        height: cellWidth,
-        color: Colors.lightBlueAccent,
-        child: Center(
-          child: Text(
-            cellContent,
-            style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+  Widget _buildAnimatedCell(String cellContent, double cellWidth) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Transform.rotate(
+          angle: _animation.value, // Вращение ячейки
+          child: GestureDetector(
+            onTap: () => _onCellTapped(cellContent),
+            child: Container(
+              height: cellWidth,
+              color: Colors.lightBlueAccent,
+              child: Center(
+                child: Text(
+                  cellContent,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   void _onCellTapped(String cellContent) {
+    setState(() {
+      expenses.removeWhere((category) => category.name == cellContent);
+    });
 
+    Navigator.of(context).pushNamed('/');
   }
 }

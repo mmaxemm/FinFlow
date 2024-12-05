@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
           ]),
           ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/');
+                Navigator.of(context).pushNamed('/delete_category');
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
