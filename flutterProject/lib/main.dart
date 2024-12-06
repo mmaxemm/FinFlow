@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'fin_flow_app.dart';
 import 'package:flutter/services.dart';
+
+import 'fin_flow_app.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
