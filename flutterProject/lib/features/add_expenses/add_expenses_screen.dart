@@ -53,7 +53,7 @@ class _AddExpensesState extends State<AddExpenses> {
                 );
               }
             },
-            child: const Text('Choose category'))
+            child: const Text('Choose category')),
       ]),
     );
   }
