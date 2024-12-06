@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 
 import "../../fin_flow_app.dart";
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -87,7 +86,18 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ]),
-          const Spacer(
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/delete_category');
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                  children: [
+                Icon(Icons.delete),
+                SizedBox(width: 8,),
+                Center(child: Text('Delete category')),
+              ])),
+          Spacer(
             flex: 1,
           ),
         ],
