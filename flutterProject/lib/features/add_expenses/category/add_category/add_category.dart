@@ -25,7 +25,6 @@ class _AddCategoryState extends State<AddCategory> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: Text(widget.title),
       ),
       body: Column(children: [

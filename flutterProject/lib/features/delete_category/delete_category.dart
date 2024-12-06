@@ -35,7 +35,6 @@ class _DeleteCategoryState extends State<DeleteCategory> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: Text(widget.title),
       ),
       body: LayoutBuilder(

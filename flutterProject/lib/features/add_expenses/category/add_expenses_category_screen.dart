@@ -23,7 +23,6 @@ class _AddExpensesCategoryState extends State<AddExpensesCategory> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: Text(widget.title),
       ),
       body: LayoutBuilder(

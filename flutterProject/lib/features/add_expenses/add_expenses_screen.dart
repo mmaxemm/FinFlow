@@ -16,7 +16,6 @@ class _AddExpensesState extends State<AddExpenses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: Text(widget.title),
       ),
       body: Column(children: [
