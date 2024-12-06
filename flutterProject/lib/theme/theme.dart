@@ -15,8 +15,10 @@ final lightTheme = ThemeData(
             color:  Color.fromARGB(255, 235, 235, 235),
           ),
         ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.amber,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.amber,
+          ),
         ),
         useMaterial3: true,
         textTheme: const TextTheme(
