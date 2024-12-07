@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (_formKey.currentState!.validate()) {
                         final email = _emailController.text;
                         final password = _passwordController.text;
-                        Navigator.of(context).pushNamed('/');
+                        sendAuthInfo(email: email, password: password, context: context);
                       }
                     },
                     child: Text(
