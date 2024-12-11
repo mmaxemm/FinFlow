@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:finflow/fin_flow_app.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +14,22 @@ class AddExpensesCategory extends StatefulWidget {
 
 class _AddExpensesCategoryState extends State<AddExpensesCategory> {
   List<Category> expenses = Expenses.instance.expenses;
+  final Category addCategory = Category('Add category', 0);
 
   late double expenseValue;
+
+  @override
+  void initState() {
+    super.initState();
+    expenses.remove(addCategory);
+    expenses.add(addCategory);
+  }
+
+  @override
+  void dispose() {
+    expenses.remove(addCategory);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +101,12 @@ class _AddExpensesCategoryState extends State<AddExpensesCategory> {
   }
 
   void _onCellTapped(String cellContent) {
+    // Category addCategory = Category('Add category', 0);
+    // expenses.remove(addCategory);
+    //expenses.removeLast();
     if (cellContent == 'Add category') {
-      Navigator.of(context).pushNamed('/add_expenses/category/add_category', arguments: expenseValue);
+      Navigator.of(context).pushNamed('/add_expenses/category/add_category',
+          arguments: expenseValue);
     } else {
       Expenses.instance.addValueByName(cellContent, expenseValue);
       Navigator.of(context).pushNamed('/');

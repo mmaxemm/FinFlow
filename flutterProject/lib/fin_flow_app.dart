@@ -7,6 +7,15 @@ class Category {
   double value;
 
   Category(this.name, this.value);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Category && other.name == name && other.value == value;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ value.hashCode;
 }
 
 class Expenses {
@@ -43,7 +52,7 @@ class Expenses {
     Category('Home5', 10),
     Category('Health5', 0),
     Category('Gifts5', 0),
-    Category('Add category', 0)
+    //Category('Add category', 0)
   ];
 }
 
