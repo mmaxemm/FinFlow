@@ -23,7 +23,7 @@ class _AddExpensesState extends State<AddExpenses> {
         TextField(
           controller: _controller,
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Enter a number',
             border: OutlineInputBorder(),
           ),
@@ -39,13 +39,13 @@ class _AddExpensesState extends State<AddExpenses> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: Text("Add valid number"),
+                      content: const Text("Add valid number"),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
+                          child: const Text("OK"),
                         ),
                       ],
                     );
