@@ -56,6 +56,31 @@ class Expenses {
   ];
 }
 
+class Income {
+  Income._privateConstructor();
+  static final Income instance = Income._privateConstructor();
+
+  void addValueByName(String name, double value) {
+    for (var category in income) {
+      if (category.name == name) {
+        category.value += value;
+        break;
+      }
+    }
+  }
+
+  List<Category> income = [
+    Category('Salary', 15),
+    Category('Deposits', 10),
+    Category('Presents', 0),
+    Category('Lottery', 0),
+  ];
+}
+
+
+
+
+
 class FinFlow extends StatelessWidget {
   const FinFlow({super.key});
 

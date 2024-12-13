@@ -69,7 +69,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: onPressed,
+              onPressed: () {
+                Navigator.of(context).pushNamed('/add_income');
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.greenAccent,
                 fixedSize: const Size(150, 75),
@@ -149,7 +151,7 @@ class _HomePageState extends State<HomePage> {
     return sectionData;
   }
 
-  void onPressed() {
-    return;
-  }
+  // void onPressed() {
+  //   return;
+  // }
 }
