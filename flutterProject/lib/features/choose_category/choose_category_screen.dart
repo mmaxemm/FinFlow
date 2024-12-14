@@ -14,6 +14,7 @@ class ChooseCategory extends StatefulWidget {
 
 class _ChooseCategoryState extends State<ChooseCategory> {
   late List<Category> categories;
+  late var className;
   // List<Category> expenses = Expenses.instance.expenses;
   // List<Category> income = Income.instance.income;
   final Category addCategory = Category('Add category', 0);
@@ -38,8 +39,10 @@ class _ChooseCategoryState extends State<ChooseCategory> {
     final routeName = ModalRoute.of(context)!.settings.name;
     if (routeName == '/add_expenses/category') {
       categories = Expenses.instance.expenses;
+      className = Expenses;
     } else {
       categories = Income.instance.income;
+      className = Income;
     }
     final Object? args = ModalRoute.of(context)?.settings.arguments;
     if (args != null && args is double) {
@@ -113,10 +116,10 @@ class _ChooseCategoryState extends State<ChooseCategory> {
     // expenses.remove(addCategory);
     //expenses.removeLast();
     if (cellContent == 'Add category') {
-      Navigator.of(context).pushNamed('/add_expenses/category/add_category',
+      Navigator.of(context).pushNamed('${ModalRoute.of(context)!.settings.name}/add_category',
           arguments: value);
     } else {
-      Expenses.instance.addValueByName(cellContent, value);
+      className.addValueByName(cellContent, value);
       Navigator.of(context).pushNamed('/');
     }
   }

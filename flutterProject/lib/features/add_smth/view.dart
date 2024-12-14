@@ -1,1 +1,1 @@
-export 'add_expenses_screen.dart';
+export 'add_smth_screen.dart';
