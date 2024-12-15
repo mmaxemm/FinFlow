@@ -31,7 +31,7 @@ class _AddCategoryState extends State<AddCategory> {
       body: Column(children: [
         TextField(
           controller: _controller,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Category name',
             border: OutlineInputBorder(),
           ),
@@ -48,13 +48,13 @@ class _AddCategoryState extends State<AddCategory> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: Text("Add valid name"),
+                      content: const Text("Add valid name"),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
+                          child: const Text("OK"),
                         ),
                       ],
                     );

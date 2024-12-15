@@ -90,14 +90,14 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/delete_category');
               },
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                   children: [
                 Icon(Icons.delete),
                 SizedBox(width: 8,),
                 Center(child: Text('Delete category')),
               ])),
-          Spacer(
+          const Spacer(
             flex: 1,
           ),
         ],

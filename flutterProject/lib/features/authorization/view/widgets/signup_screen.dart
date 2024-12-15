@@ -10,36 +10,26 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailFocusNode = FocusNode();
+  final _usernameFocusNode = FocusNode();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _emailFocusNode.requestFocus();
+      _usernameFocusNode.requestFocus();
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _emailFocusNode.dispose();
+    _usernameFocusNode.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
-  }
-
-  String? validateConfirmPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (value != _passwordController.text) {
-      return 'Passwords do not match';
-    }
-    return null;
   }
 
   @override
@@ -57,12 +47,21 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 13),
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
-                focusNode: _emailFocusNode,
+                focusNode: _usernameFocusNode,
+                controller: _usernameController,
+                validator: validateUsername,
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                ),
+              ),
+              const SizedBox(height: 13),
+              TextFormField(
                 controller: _emailController,
                 validator: validateEmail,
                 decoration: const InputDecoration(
-                  labelText: 'Email address',
+                  labelText: 'Email',
                 ),
+                obscureText: true,
               ),
               const SizedBox(height: 13),
               TextFormField(
@@ -74,24 +73,16 @@ class _SignupScreenState extends State<SignupScreen> {
                 obscureText: true,
               ),
               const SizedBox(height: 13),
-              TextFormField(
-                controller: _confirmPasswordController,
-                validator: validateConfirmPassword,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm password',
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 13),
               SizedBox(
                   width: 150,
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        final username = _usernameController.text;
                         final email = _emailController.text;
                         final password = _passwordController.text;
-                        Navigator.of(context).pushNamed('/');
+                        signUp(username: username, email: email, password: password, context: context);
                       }
                     },
                     child: Text(
