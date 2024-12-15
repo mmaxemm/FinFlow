@@ -7,6 +7,15 @@ class Category {
   double value;
 
   Category(this.name, this.value);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Category && other.name == name && other.value == value;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ value.hashCode;
 }
 
 class Expenses {
@@ -43,9 +52,34 @@ class Expenses {
     Category('Home5', 10),
     Category('Health5', 0),
     Category('Gifts5', 0),
-    Category('Add category', 0)
+    //Category('Add category', 0)
   ];
 }
+
+class Income {
+  Income._privateConstructor();
+  static final Income instance = Income._privateConstructor();
+
+  void addValueByName(String name, double value) {
+    for (var category in income) {
+      if (category.name == name) {
+        category.value += value;
+        break;
+      }
+    }
+  }
+
+  List<Category> income = [
+    Category('Salary', 15),
+    Category('Deposits', 10),
+    Category('Presents', 0),
+    Category('Lottery', 0),
+  ];
+}
+
+
+
+
 
 class FinFlow extends StatelessWidget {
   const FinFlow({super.key});

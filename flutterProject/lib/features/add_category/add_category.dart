@@ -12,16 +12,18 @@ class AddCategory extends StatefulWidget {
 
 class _AddCategoryState extends State<AddCategory> {
   List<Category> expenses = Expenses.instance.expenses;
+  List<Category> income = Income.instance.income;
 
-  late double expenseValue;
+  late double value;
 
   final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final routeName = ModalRoute.of(context)!.settings.name;
     final Object? args = ModalRoute.of(context)?.settings.arguments;
     if (args != null && args is double) {
-      expenseValue = args;
+      value = args;
     }
     return Scaffold(
       appBar: AppBar(
@@ -30,7 +32,7 @@ class _AddCategoryState extends State<AddCategory> {
       body: Column(children: [
         TextField(
           controller: _controller,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Category name',
             border: OutlineInputBorder(),
           ),
@@ -39,21 +41,27 @@ class _AddCategoryState extends State<AddCategory> {
             onPressed: () {
               String? categoryName = _controller.text;
               if (categoryName != '') {
-                expenses.add(Category(categoryName, 0));
-                Expenses.instance.addValueByName(categoryName, expenseValue);
+                if (routeName == '/add_expenses/category/add_category') {
+                  expenses.add(Category(categoryName, 0));
+                  Expenses.instance.addValueByName(categoryName, value);
+                }
+                if (routeName == '/add_expenses/category/add_category') {
+                  income.add(Category(categoryName, 0));
+                  Income.instance.addValueByName(categoryName, value);
+                }
                 Navigator.of(context).pushNamed('/');
               } else {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: const Text("Add valid name"),
+                      content: Text("Add valid name"),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text("OK"),
+                          child: Text("OK"),
                         ),
                       ],
                     );

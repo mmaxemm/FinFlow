@@ -11,7 +11,7 @@ class AddCategory extends StatefulWidget {
 }
 
 class _AddCategoryState extends State<AddCategory> {
-  List<Category> expenses = Expenses.instance.expenses;
+  List<Category> income = Income.instance.income;
 
   late double expenseValue;
 
@@ -30,7 +30,7 @@ class _AddCategoryState extends State<AddCategory> {
       body: Column(children: [
         TextField(
           controller: _controller,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Category name',
             border: OutlineInputBorder(),
           ),
@@ -39,21 +39,21 @@ class _AddCategoryState extends State<AddCategory> {
             onPressed: () {
               String? categoryName = _controller.text;
               if (categoryName != '') {
-                expenses.add(Category(categoryName, 0));
-                Expenses.instance.addValueByName(categoryName, expenseValue);
+                income.add(Category(categoryName, 0));
+                Income.instance.addValueByName(categoryName, expenseValue);
                 Navigator.of(context).pushNamed('/');
               } else {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: const Text("Add valid name"),
+                      content: Text("Add valid name"),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text("OK"),
+                          child: Text("OK"),
                         ),
                       ],
                     );

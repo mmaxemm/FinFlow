@@ -1,28 +1,19 @@
-import 'package:finflow/fin_flow_app.dart';
 import 'package:flutter/material.dart';
 
-class AddCategory extends StatefulWidget {
-  const AddCategory({super.key, required this.title});
+class AddIncome extends StatefulWidget {
+  const AddIncome({super.key, required this.title});
 
   final String title;
 
   @override
-  State<AddCategory> createState() => _AddCategoryState();
+  State<AddIncome> createState() => _AddIncomeState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
-  List<Category> expenses = Expenses.instance.expenses;
-
-  late double expenseValue;
-
+class _AddIncomeState extends State<AddIncome> {
   final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final Object? args = ModalRoute.of(context)?.settings.arguments;
-    if (args != null && args is double) {
-      expenseValue = args;
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -30,30 +21,30 @@ class _AddCategoryState extends State<AddCategory> {
       body: Column(children: [
         TextField(
           controller: _controller,
-          decoration: const InputDecoration(
-            hintText: 'Category name',
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            hintText: 'Enter a number',
             border: OutlineInputBorder(),
           ),
         ),
         ElevatedButton(
             onPressed: () {
-              String? categoryName = _controller.text;
-              if (categoryName != '') {
-                expenses.add(Category(categoryName, 0));
-                Expenses.instance.addValueByName(categoryName, expenseValue);
-                Navigator.of(context).pushNamed('/');
+              double? incomeValue = double.tryParse(_controller.text);
+              if (incomeValue != null && incomeValue > 0) {
+                Navigator.of(context).pushNamed('/add_income/category',
+                    arguments: incomeValue);
               } else {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: const Text("Add valid name"),
+                      content: Text("Add valid number"),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text("OK"),
+                          child: Text("OK"),
                         ),
                       ],
                     );
@@ -61,7 +52,7 @@ class _AddCategoryState extends State<AddCategory> {
                 );
               }
             },
-            child: const Text('Add category'))
+            child: const Text('Choose category')),
       ]),
     );
   }

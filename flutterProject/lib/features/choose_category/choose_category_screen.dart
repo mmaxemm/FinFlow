@@ -3,39 +3,50 @@ import 'dart:math';
 import 'package:finflow/fin_flow_app.dart';
 import 'package:flutter/material.dart';
 
-class AddExpensesCategory extends StatefulWidget {
-  const AddExpensesCategory({super.key, required this.title});
+class ChooseCategory extends StatefulWidget {
+  const ChooseCategory({super.key, required this.title});
 
   final String title;
 
   @override
-  State<AddExpensesCategory> createState() => _AddExpensesCategoryState();
+  State<ChooseCategory> createState() => _ChooseCategoryState();
 }
 
-class _AddExpensesCategoryState extends State<AddExpensesCategory> {
-  List<Category> expenses = Expenses.instance.expenses;
+class _ChooseCategoryState extends State<ChooseCategory> {
+  late List<Category> categories;
+  late var className;
+  // List<Category> expenses = Expenses.instance.expenses;
+  // List<Category> income = Income.instance.income;
   final Category addCategory = Category('Add category', 0);
 
-  late double expenseValue;
+  late double value;
 
   @override
   void initState() {
     super.initState();
-    expenses.remove(addCategory);
-    expenses.add(addCategory);
+    categories.remove(addCategory);
+    categories.add(addCategory);
   }
 
   @override
   void dispose() {
-    expenses.remove(addCategory);
+    categories.remove(addCategory);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final routeName = ModalRoute.of(context)!.settings.name;
+    if (routeName == '/add_expenses/category') {
+      categories = Expenses.instance.expenses;
+      className = Expenses;
+    } else {
+      categories = Income.instance.income;
+      className = Income;
+    }
     final Object? args = ModalRoute.of(context)?.settings.arguments;
     if (args != null && args is double) {
-      expenseValue = args;
+      value = args;
     }
     return Scaffold(
       appBar: AppBar(
@@ -50,7 +61,7 @@ class _AddExpensesCategoryState extends State<AddExpensesCategory> {
               color: const Color(0xfffef7ff),
               width: 3,
             ),
-            children: _buildTableRows(expenses, cellWidth),
+            children: _buildTableRows(categories, cellWidth),
           ));
         },
       ),
@@ -105,10 +116,10 @@ class _AddExpensesCategoryState extends State<AddExpensesCategory> {
     // expenses.remove(addCategory);
     //expenses.removeLast();
     if (cellContent == 'Add category') {
-      Navigator.of(context).pushNamed('/add_expenses/category/add_category',
-          arguments: expenseValue);
+      Navigator.of(context).pushNamed('${ModalRoute.of(context)!.settings.name}/add_category',
+          arguments: value);
     } else {
-      Expenses.instance.addValueByName(cellContent, expenseValue);
+      className.addValueByName(cellContent, value);
       Navigator.of(context).pushNamed('/');
     }
   }
