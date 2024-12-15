@@ -10,23 +10,23 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailFocusNode = FocusNode();
-  final _emailController = TextEditingController();
+  final _usernameFocusNode = FocusNode();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _emailFocusNode.requestFocus();
+      _usernameFocusNode.requestFocus();
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _emailFocusNode.dispose();
-    _emailController.dispose();
+    _usernameFocusNode.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
   }
 
@@ -46,12 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 13),
               TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                focusNode: _emailFocusNode,
-                controller: _emailController,
-                validator: validateEmail,
+                focusNode: _usernameFocusNode,
+                controller: _usernameController,
+                validator: validateUsername,
                 decoration: const InputDecoration(
-                  labelText: 'Email address',
+                  labelText: 'Username',
                 ),
               ),
               const SizedBox(height: 13),
@@ -70,9 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        final email = _emailController.text;
+                        final username = _usernameController.text;
                         final password = _passwordController.text;
-                        sendAuthInfo(email: email, password: password, context: context);
+                        signIn(username: username, password: password, context: context);
                       }
                     },
                     child: Text(
