@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,15 +18,17 @@ import java.io.IOException;
 
 @Component
 public class TokenFilter extends OncePerRequestFilter {
+    @Autowired
     private JwtCore jwtCore;
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = null;
         String username = null;
-        UserDetails userDetails = null;
-        UsernamePasswordAuthenticationToken authenticationToken = null;
+        UserDetails userDetails;
+        UsernamePasswordAuthenticationToken authenticationToken;
         try {
             String headerAuth = request.getHeader("Authorization");
             if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
@@ -34,8 +37,9 @@ public class TokenFilter extends OncePerRequestFilter {
             if (jwt != null) {
                 try {
                     username = jwtCore.getNameFromJwt(jwt);
-                } catch (ExpiredJwtException e) {
-                    //TODO
+                } catch (ExpiredJwtException e) { //TODO why when leaving the code in exception it is always an ecxeption
+//                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                    response.getWriter().write("JWT token has expired");
                 }
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     userDetails = userDetailsService.loadUserByUsername(username);
@@ -46,7 +50,9 @@ public class TokenFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            //TODO
+//            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//            response.getWriter().write("An error occurred while processing the token");
+//            e.printStackTrace();
         }
         filterChain.doFilter(request, response );
     }

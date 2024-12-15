@@ -35,7 +35,7 @@ public class SecurityController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Autowired //TODO error
+    @Autowired
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
@@ -66,9 +66,10 @@ public class SecurityController {
 
     @PostMapping("/signin")
     ResponseEntity<?> signin(@RequestBody SigninRequest signinRequest) {
-        Authentication authentication = null;
+        Authentication authentication;
         try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(),
+                    signinRequest.getPassword()));
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

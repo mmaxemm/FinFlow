@@ -3,6 +3,7 @@ package com.finflow.authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,6 +51,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    @Primary
     public AuthenticationManagerBuilder configureAuthenticationManagerBuilder(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder;
@@ -72,7 +74,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/secured/user").fullyAuthenticated()
-                        .anyRequest().permitAll() //TODO should we leave it?
+                        .anyRequest().permitAll()
                  )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
