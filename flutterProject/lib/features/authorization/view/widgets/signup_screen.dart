@@ -61,7 +61,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Email',
                 ),
-                obscureText: true,
               ),
               const SizedBox(height: 13),
               TextFormField(
