@@ -1,6 +1,5 @@
 package com.finflow.synchronization;
 
-import com.finflow.authorization.UserRepository;
 import com.finflow.synchronization.dto.*;
 import com.finflow.synchronization.entity.*;
 import com.finflow.synchronization.repository.*;
@@ -9,9 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class SyncService {
@@ -22,102 +19,75 @@ public class SyncService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Transactional
     public SyncResponse synchronize(String username, SyncRequest syncRequest) {
-        Long userId = userRepository.findUserByUsername(username).orElseThrow().getId();
+        Integer userId = findUserIdByUsername(username);
 
-        LocalDateTime lastSyncDate = getLastSyncDate((int) (long) userId);
-
-        // Determine whether to apply or return changes
-        if (syncRequest.getLastChangeDate().isAfter(lastSyncDate)) {
-            applyChanges((int) (long) userId, syncRequest);
-            updateLastSyncDate((int) (long) userId);
-
-            // Return a response indicating changes were applied
-            SyncResponse response = new SyncResponse();
-            response.setMessage("Client changes applied successfully.");
-            return response;
+        if (syncRequest.getLastChangeDate().isAfter(getLastSyncDate(userId))) {
+            applyChanges(userId, syncRequest);
+            return buildResponse("Client changes applied successfully.", userId);
         } else {
-            // Return the server changes
-            SyncResponse.ServerChanges serverChanges = new SyncResponse.ServerChanges();
-            serverChanges.setCategories(categoryRepository
-                    .findByUserIdAndLastModifiedAfter((int) (long) userId, lastSyncDate)
-                    .stream()
-                    .map(this::mapToCategoryDTO)
-                    .toList());
-            serverChanges.setTransactions(transactionRepository
-                    .findByUserIdAndLastModifiedAfter((int) (long) userId, lastSyncDate)
-                    .stream()
-                    .map(this::mapToTransactionDTO)
-                    .toList());
-
-            SyncResponse response = new SyncResponse();
-            response.setMessage("Returning server changes.");
-            response.setServerChanges(serverChanges);
-            return response;
+            return buildResponse("Returning server changes.", userId);
         }
     }
 
-
     private void applyChanges(Integer userId, SyncRequest syncRequest) {
-        // Apply categories changes
-        syncRequest.getCategories().getAdded().forEach(category -> {
-            categoryRepository.save(new CategoryEntity(userId, category.getName(), category.getType()));
-        });
-        syncRequest.getCategories().getDeleted().forEach(categoryRepository::deleteById);
+        // Apply categories
+        for (CategoryDTO category : syncRequest.getCategories().getAdded()) {
+            categoryRepository.findByUserIdAndNameAndType(userId, category.getName(), category.getType())
+                    .orElseGet(() -> categoryRepository.save(new CategoryEntity(userId, category.getName(), category.getType())));
+        }
 
-        // Apply transactions changes
-        syncRequest.getTransactions().getAdded().forEach(transaction -> {
-            transactionRepository.save(new TransactionEntity(
-                    userId,
-                    Integer.parseInt(transaction.getCategoryID().toString()),  // Link category by ID
-                    BigDecimal.valueOf(Double.parseDouble(transaction.getAmount().toString())),
-                    LocalDateTime.parse(transaction.getTransactionDate().toString()),
-                    transaction.getDescription()
-            ));
+        // Apply transactions
+        for (TransactionDTO transaction : syncRequest.getTransactions().getAdded()) {
+            CategoryEntity category = categoryRepository.findByUserIdAndNameAndType(userId, transaction.getCategoryName(), transaction.getType())
+                    .orElseThrow(() -> new IllegalStateException("Category not found: " + transaction.getCategoryName()));
 
-        });
-        syncRequest.getTransactions().getDeleted().forEach(transactionRepository::deleteById);
+            transactionRepository.findByUserIdAndCategoryAndTransactionDateAndAmount(userId, category.getId(), transaction.getTransactionDate(), transaction.getAmount())
+                    .orElseGet(() -> transactionRepository.save(new TransactionEntity(userId, category, transaction.getAmount(), transaction.getTransactionDate(), transaction.getDescription())));
+        }
     }
 
-    private Map<String, Object> getServerChanges(Integer userId, LocalDateTime lastSyncDate) {
-        Map<String, Object> changes = new HashMap<>();
+    private SyncResponse buildResponse(String message, Integer userId) {
+        SyncResponse response = new SyncResponse();
+        response.setMessage(message);
 
-        changes.put("transactions", transactionRepository.findByUserIdAndLastModifiedAfter(userId, lastSyncDate));
-        changes.put("categories", categoryRepository.findByUserIdAndLastModifiedAfter(userId, lastSyncDate));
+        SyncResponse.ServerChanges serverChanges = new SyncResponse.ServerChanges();
+        serverChanges.setCategories(mapToCategoryDTOs(categoryRepository.findAllByUserId(userId)));
+        serverChanges.setTransactions(mapToTransactionDTOs(transactionRepository.findAllByUserId(userId)));
 
-        return changes;
+        response.setServerChanges(serverChanges);
+        return response;
+    }
+
+    private Integer findUserIdByUsername(String username) {
+        // Mocked; replace with actual user lookup
+        return 1;
     }
 
     private LocalDateTime getLastSyncDate(Integer userId) {
-        userRepository.findLastSyncDate(userId);
-        return LocalDateTime.now().minusDays(1); // Placeholder
+        // Placeholder; fetch last sync date
+        return LocalDateTime.now().minusDays(1);
     }
 
-    private void updateLastSyncDate(Integer userId) {
-        // Update last sync date in the metadata table or user record
+    private List<CategoryDTO> mapToCategoryDTOs(List<CategoryEntity> entities) {
+        return entities.stream().map(entity -> {
+            CategoryDTO dto = new CategoryDTO();
+            dto.setName(entity.getName());
+            dto.setType(entity.getType());
+            return dto;
+        }).toList();
     }
 
-    public CategoryDTO mapToCategoryDTO(CategoryEntity entity) {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        dto.setType(entity.getType());
-        return dto;
-    }
-
-    private TransactionDTO mapToTransactionDTO(TransactionEntity entity) {
-        TransactionDTO dto = new TransactionDTO();
-        dto.setTransactionId(entity.getTransactionId());
-        dto.setCategoryId(entity.getCategory().getId()); // Map category ID
-        dto.setCategoryName(entity.getCategory().getName()); // Map category name
-        dto.setAmount(entity.getAmount());
-        dto.setTransactionDate(entity.getTransactionDate());
-        dto.setDescription(entity.getDescription());
-        return dto;
+    private List<TransactionDTO> mapToTransactionDTOs(List<TransactionEntity> entities) {
+        return entities.stream().map(entity -> {
+            TransactionDTO dto = new TransactionDTO();
+            dto.setCategoryName(entity.getCategory().getName());
+            dto.setType(entity.getCategory().getType());
+            dto.setAmount(entity.getAmount());
+            dto.setTransactionDate(entity.getTransactionDate());
+            dto.setDescription(entity.getDescription());
+            return dto;
+        }).toList();
     }
 }
-

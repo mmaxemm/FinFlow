@@ -36,10 +36,10 @@ public class TransactionEntity {
     private LocalDateTime lastModified;
 
     @Column
-    private Boolean isDeleted = false;
+    private String description;
 
     @Column
-    private String description;
+    private Boolean isDeleted = false;
 
     public TransactionEntity(Integer userId, CategoryEntity category, BigDecimal amount, LocalDateTime transactionDate, String description) {
         this.userId = userId;
@@ -49,6 +49,4 @@ public class TransactionEntity {
         this.description = description;
     }
 
-    public TransactionEntity() {}
 }
-

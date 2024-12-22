@@ -4,8 +4,6 @@ import lombok.Data;
 
 @Data
 public class CategoryDTO {
-    private Integer id;
-    private String name;
-    private String type;
+    private String name; // Unique per user and type
+    private String type; // "income" or "expense"
 }
-

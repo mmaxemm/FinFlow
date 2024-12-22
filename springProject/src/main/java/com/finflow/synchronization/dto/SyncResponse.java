@@ -13,5 +13,6 @@ public class SyncResponse {
     public static class ServerChanges {
         private List<CategoryDTO> categories;
         private List<TransactionDTO> transactions;
+        //private List<CategoryDTO> categorys;
     }
 }

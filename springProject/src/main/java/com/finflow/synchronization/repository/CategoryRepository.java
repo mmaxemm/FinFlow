@@ -3,11 +3,12 @@ package com.finflow.synchronization.repository;
 import com.finflow.synchronization.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
-    List<CategoryEntity> findByUserIdAndLastModifiedAfter(Integer userId, LocalDateTime lastModified);
+    Optional<CategoryEntity> findByUserIdAndNameAndType(Integer userId, String name, String type);
 
-    public void deleteById(Integer id);
+    List<CategoryEntity> findAllByUserId(Integer userId);
+
 }
